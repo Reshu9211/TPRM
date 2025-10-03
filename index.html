@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Third Party Risk Management</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- DataTables CSS -->
+  <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --tprm-bg: #1e1e2d !important;
+      --tprm-card-bg: #2c2c3c !important;
+      --tprm-text: #eaeaea;
+      --tprm-muted: #b5b5b5;
+      --tprm-primary: #2f54eb;
+      --tprm-success: #28c76f;
+      --tprm-warning: #ff9f43;
+      --tprm-danger: #ff4d4d;
+      --tprm-hover: #fec76f;
+      --tprm-shadow: rgba(243, 130, 0, 0.15);
+    }
+
+    body {
+      background-color: var(--tprm-bg);
+      font-family: "Segoe UI", sans-serif;
+      color: var(--tprm-text);
+    }
+.container {
+ padding-top: 85px;
+    margin-right: 20px;
+    width: 100%;
+    /* float: right; */
+    margin-left: 50px !important;
+    max-width: 1460px !important;
+    padding-left: 45px;
+}
+
+    /* Header */
+    .tprm-header {
+     
+      height: 65px;
+   
+      color: white;
+      padding: 10px 20px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      z-index: 1000;
+      background: #33333b;
+    }
+  .tprm-sidebar {
+  width: 70px;
+  background: #1e1e2d;
+  position: fixed;
+  top: 60px; /* below navbar */
+  left: 0;
+  height: 100%;
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  /* Add shadow on right */
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.6);
+}
+
+    .tprm-sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .tprm-sidebar ul li {
+      padding: 20px 15px;
+    }
+    .tprm-sidebar ul li a {
+      box-shadow: #2b2d36 0px 1px 3px;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.3s ease;
+    }
+    .tprm-sidebar ul li a:hover {
+      background: var(--tprm-text);
+      color: white;
+      opacity: 0.5;
+     
+      border-radius: 2px;
+    }
+
+   
+    .tprm-title {
+      font-weight: 500;
+      font-size: 1.6rem;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      
+    }
+    .tprm-title i {
+      color: var(--tprm-primary);
+      font-size: 1.9rem;
+    }
+    .tprm-subtitle {
+      font-size: 0.9rem;
+      color: var(--tprm-muted);
+      margin-left: 30px;
+    }
+
+    /* Role Dropdown */
+  .tprm-role1 {
+  color: white;
+  margin-left: auto;   /* Right side push */
+  margin-right: 20px;  /* thoda gap right edge se */
+}
+
+.tprm-role1 select {
+  padding: 0.3rem 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: var(--tprm-card-bg);
+  color: var(--tprm-text);
+}
+
+
+    /* Stats Cards */
+   .tprm-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(20px, 1fr)); /* chota card width */
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.tprm-card {
+    background: var(--tprm-card-bg, #2e3038);
+    padding: 2rem;              /* thoda kam padding */
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;      /* vertical center */
+    justify-content: center;     /* vertical center */
+    align-items: center;         /* horizontal center */
+    text-align: center;          /* text bhi center */
+    color: white;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    min-height: 100px;           /* card height adjust */
+}
+
+.tprm-card:hover {
+    transform: translateY(-5px); 
+    box-shadow: 0 2px 2px rgba(254, 199, 111, 0.5); /* #fec76f shadow */
+    border-color: var(--tprm-hover, #fec76f); /* border hover effect */
+}
+
+.tprm-card:hover i {
+    background: rgba(254, 199, 111, 0.2); /* icon hover highlight */
+}
+
+
+.tprm-card h5 {
+    font-size: 17px;
+    color:rgb(241, 241, 241);
+
+    margin: 0.5rem 0 0.3rem 0;
+    font-weight: 400;
+}
+
+.tprm-card h2 {
+    margin: 0;
+    font-size: 22px;           
+    font-weight: 600;
+    color: #fff;
+}
+
+.tprm-card i {
+    background: rgba(255,255,255,0.08);
+    width: 70px;                 
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem !important;
+    margin-bottom: 0.6rem;       /* icon aur text ke beech gap */
+}
+
+
+   /* Vendor Table */
+    .tprm-section1 {
+      background: var(--tprm-card-bg);
+      border-radius: 10px;
+      padding: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+    }
+    /* .tprm-section1:hover {
+      box-shadow: 0 5px 20px var(--tprm-shadow);
+      border-color: var(--tprm-hover);
+    } */
+    .tprm-section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      color: white;
+    }
+    .tprm-btn {
+      background: #f38200;
+      border: none;
+      color: #fff;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .tprm-btn:hover {
+      background: var(--tprm-hover);
+      transform: translateY(-2px);
+      box-shadow: 1px 1px 2px #f38200;
+    }
+
+    /* DataTable Styling */
+    .dataTables_wrapper {
+      color: var(--tprm-text);
+    }
+    
+    .dataTables_wrapper .dataTables_length,
+    .dataTables_wrapper .dataTables_filter,
+    .dataTables_wrapper .dataTables_info,
+    .dataTables_wrapper .dataTables_paginate {
+      color: white !important;
+    }
+    
+    .dataTables_wrapper .dataTables_length select,
+    .dataTables_wrapper .dataTables_filter input {
+      background: var(--tprm-bg);
+      color: var(--tprm-text);
+      border: 1px solid #555;
+      border-radius: 4px;
+      padding: 0.3rem;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+      color: var(--tprm-text) !important;
+      background: var(--tprm-card-bg) !important;
+      border: 1px solid #555 !important;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+      background: var(--tprm-primary) !important;
+      color: white !important;
+      border: 1px solid var(--tprm-primary) !important;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+      background: var(--tprm-hover) !important;
+      color: white !important;
+      border: 1px solid var(--tprm-hover) !important;
+    }
+    
+    table.dataTable {
+      border-collapse: separate !important;
+      border-spacing: 0 0.2rem !important;
+      color: #25282d;
+    }
+    
+    table.dataTable thead th {
+      color: white;
+      font-weight: 500;
+      padding: 0.75rem;
+      text-align: left;
+      font-size: 0.9rem;
+      border-bottom: 1px solid #555;
+      background-color: #25282d;
+    }
+    
+    table.dataTable tbody td {
+      background:#444650;
+      padding: 0.9rem;
+     color: white;
+      vertical-align: middle;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      border: none;
+    }
+    
+ 
+    
+    .tprm-risk-badge {
+      background: #fff8db;
+      color: var(--tprm-danger);
+      padding: 0.3rem 0.9rem;
+      border-radius: 3px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      border-radius: 8px;
+     
+    }
+    .tprm-status-badge {
+      background: #fff8db;
+      color: var(--tprm-warning);
+      padding: 0.3rem 0.9rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+
+    }
+    .tprm-progress {
+      height: 8px;
+      border-radius: 4px;
+      background: #eaeaea;
+      overflow: hidden;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+    }
+    .tprm-progress-bar {
+
+      height: 100%;
+      background:rgb(203, 149, 49);
+      width: 75%;
+      box-shadow: 0 1px 3px rgba(47, 84, 235, 0.3);
+    }
+    .tprm-avatar {
+      width: 36px;
+      height: 36px;
+      background: #fff8db;
+      color: red;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      margin-right: 0.7rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+     
+    }
+  
+    .tprm-link {
+      color: #f38200;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      padding: 0.3rem 0.6rem;
+      border-radius: 4px;
+    }
+    .tprm-link:hover {
+      color: var(--tprm-hover);
+      background: rgba(243, 130, 0, 0.1);
+      box-shadow: 0 2px 5px var(--tprm-shadow);
+    }
+    
+    /* Modal Styling */
+    .modal-content {
+      background: var(--tprm-card-bg);
+      color: var(--tprm-text);
+    }
+    
+    .modal-header {
+      border-bottom: 1px solid #555;
+    }
+    
+    .modal-footer {
+      border-top: 1px solid #555;
+    }
+    
+    .form-control, .form-select {
+      background: var(--tprm-bg);
+      color: var(--tprm-text);
+      border: 1px solid #555;
+    }
+    
+    .form-control:focus, .form-select:focus {
+      background: var(--tprm-bg);
+      color: var(--tprm-text);
+      border-color: var(--tprm-primary);
+      box-shadow: 0 0 0 0.2rem rgba(47, 84, 235, 0.25);
+    }
+    .tprm-headtext{
+      color: white;
+      font-size: 15px;
+      font-weight: 400;
+    }
+    .text-muted{
+      color: whitesmoke;
+      font-size: 12px;
+    }
+    /* Additional vendor rows for better visualization */
+    .tprm-avatar.medium-risk {
+      background: #fff8db;
+      color: #ff9f43;
+    }
+    .tprm-avatar.low-risk {
+      background: #e8f8ef;
+      color: #28c76f;
+    }
+    
+    .tprm-risk-badge.medium {
+      background: #fff8db;
+      color: var(--tprm-warning);
+    }
+    .tprm-risk-badge.low {
+      background: #e8f8ef;
+      color: var(--tprm-success);
+    }
+    
+    .tprm-status-badge.completed {
+      background: #e8f8ef;
+      color: var(--tprm-success);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  
+  <div class="tprm-header">
+   
+  </div>
+  <div class="tprm-sidebar">
+    <!-- <ul>
+      <li><a href="#"><i class="bi bi-speedometer2"></i> </a></li>
+      <li><a href="#"><i class="bi bi-people-fill"></i> </a></li>
+      <li><a href="#"><i class="bi bi-clipboard-check"></i> </a></li>
+      <li><a href="#"><i class="bi bi-gear"></i> </a></li>
+      <li><a href="#"><i class="bi bi-box-arrow-right"></i></a></li>
+    </ul> -->
+  </div>
+
+  <div class="container">
+
+    <div style="display: flex; justify-content: space-between;">
+      
+     <div>
+      <div class="tprm-title">
+        <i class="bi bi-shield-lock-fill"></i> Third Party Risk Management
+      </div>
+      <div class="tprm-subtitle">Vendor Assessment Platform</div>
+      
+    </div>
+    
+    <div class="tprm-role1">
+      Role: 
+      <select>
+        <option>Client</option>
+        <option>Vendor</option>
+        <option>Admin</option>
+      </select>
+    </div>
+
+    </div>
+    <hr>
+    <!-- Stats -->
+    <div class="tprm-stats">
+      <div class="tprm-card">
+  <div>
+    <i class="bi bi-people-fill text-primary"></i>
+    <h5>Active Vendors</h5>
+    <h2>24</h2>
+  </div>
+  
+</div>
+
+<div class="tprm-card">
+  <div>
+      <i class="bi bi-exclamation-triangle-fill text-danger"></i>
+    <h5>High Risk</h5>
+    <h2>3</h2>
+  </div>
+
+</div>
+
+<div class="tprm-card">
+  <div>
+     <i class="bi bi-hourglass-split text-warning"></i>
+    <h5>Pending Reviews</h5>
+    <h2>8</h2>
+  </div>
+  
+</div>
+
+<div class="tprm-card">
+  <div>
+      <i class="bi bi-check-circle-fill text-success"></i>
+    <h5>Compliant</h5>
+    <h2>13</h2>
+  </div>
+
+</div>
+
+    </div>
+
+    <!-- Vendor Management -->
+    <div class="tprm-section1">
+      <div class="tprm-section-header">
+        <h5>Vendor Management</h5>
+        
+        <button class="tprm-btn" data-bs-toggle="modal" data-bs-target="#vendorModal">+ Onboard Vendor</button>
+      </div>
+      
+      <table id="vendorTable" class="table table-striped" style="width:100%" >
+        <thead>
+          <tr>
+            <th>Vendor Name</th>
+            <th>Risk Score</th>
+            <th>Progress</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+          <tr>
+            
+            <td>
+             
+              <div class="d-flex align-items-center">
+                <div class="tprm-avatar">AC</div>
+                <div >
+                  <div class="tprm-headtext">Acme Cloud Services</div>
+                  <small class="text-muted">Cloud Infrastructure</small>
+                </div>
+              </div>
+            </td>
+            <td><span class="tprm-risk-badge">High Risk (85)</span></td>
+            <td>
+              <div class="d-flex align-items-center">
+                <div class="tprm-progress flex-grow-1 me-2">
+                  <div class="tprm-progress-bar"></div>
+                </div>
+                75%
+              </div>
+            </td>
+            <td><span class="tprm-status-badge">In Progress</span></td>
+            <td><a href="#" class="tprm-link"><i class="fas fa-eye"></i></a></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="d-flex align-items-center ">
+                <div class="tprm-avatar medium-risk">DS</div>
+                <div>
+                  <div class="tprm-headtext">DataSecure Inc.</div>
+                  <small class="text-muted">Data Protection</small>
+                </div>
+              </div>
+            </td>
+            <td><span class="tprm-risk-badge medium">Medium Risk (45)</span></td>
+            <td>
+              <div class="d-flex align-items-center">
+                <div class="tprm-progress flex-grow-1 me-2">
+                  <div class="tprm-progress-bar" style="width: 90%;"></div>
+                </div>
+                90%
+              </div>
+            </td>
+            <td><span class="tprm-status-badge completed">Completed</span></td>
+             <td><a href="#" class="tprm-link"><i class="fas fa-eye"></i></a></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="d-flex align-items-center ">
+                <div class="tprm-avatar low-risk">PS</div>
+                <div>
+                  <div class="tprm-headtext">Payment Solutions</div>
+                  <small class="text-muted">Financial Services</small>
+                </div>
+              </div>
+            </td>
+            <td><span class="tprm-risk-badge low">Low Risk (15)</span></td>
+            <td>
+              <div class="d-flex align-items-center">
+                <div class="tprm-progress flex-grow-1 me-2">
+                  <div class="tprm-progress-bar" style="width: 60%;"></div>
+                </div>
+                60%
+              </div>
+            </td>
+            <td><span class="tprm-status-badge">In Progress</span></td>
+             <td><a href="#" class="tprm-link"><i class="fas fa-eye"></i></a></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="d-flex align-items-center ">
+                <div class="tprm-avatar">TC</div>
+                <div>
+                  <div class="tprm-headtext">TechCorp Solutions</div>
+                  <small class="text-muted">Software Development</small>
+                </div>
+              </div>
+            </td>
+            <td><span class="tprm-risk-badge medium">Medium Risk (55)</span></td>
+            <td>
+              <div class="d-flex align-items-center">
+                <div class="tprm-progress flex-grow-1 me-2">
+                  <div class="tprm-progress-bar" style="width: 40%;"></div>
+                </div>
+                40%
+              </div>
+            </td>
+            <td><span class="tprm-status-badge">Pending</span></td>
+             <td><a href="#" class="tprm-link"><i class="fas fa-eye"></i></a></td>s
+          </tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vendor Onboarding Modal -->
+  <div class="modal fade" id="vendorModal" tabindex="-1" aria-labelledby="vendorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="vendorModalLabel">Onboard New Vendor</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" >
+          <form id="vendorForm">
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="vendorName" class="form-label">Vendor Name</label>
+                <input type="text" class="form-control" id="vendorName" required>
+              </div>
+              <div class="col-md-6">
+                <label for="vendorCategory" class="form-label">Category</label>
+                <select class="form-select" id="vendorCategory" required>
+                  <option value="">Select Category</option>
+                  <option value="Cloud Infrastructure">Cloud Infrastructure</option>
+                  <option value="Data Protection">Data Protection</option>
+                  <option value="Financial Services">Financial Services</option>
+                  <option value="Software Development">Software Development</option>
+                  <option value="Consulting">Consulting</option>
+                </select>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="vendorContact" class="form-label">Contact Person</label>
+                <input type="text" class="form-control" id="vendorContact" required>
+              </div>
+              <div class="col-md-6">
+                <label for="vendorEmail" class="form-label">Email</label>
+                <input type="email" class="form-control" id="vendorEmail" required>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="vendorRisk" class="form-label">Initial Risk Assessment</label>
+                <select class="form-select" id="vendorRisk" required>
+                  <option value="">Select Risk Level</option>
+                  <option value="Low">Low Risk</option>
+                  <option value="Medium">Medium Risk</option>
+                  <option value="High">High Risk</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label for="vendorStatus" class="form-label">Status</label>
+                <select class="form-select" id="vendorStatus" required>
+                  <option value="">Select Status</option>
+                  <option value="Pending">Pending</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="Completed">Completed</option>
+                </select>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="vendorDescription" class="form-label">Description</label>
+              <textarea class="form-control" id="vendorDescription" rows="3"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn tprm-btn" id="saveVendor">Save Vendor</button>
+        </div>
+    
+    </div>
+  </div>
+
+  <!-- Bootstrap & DataTables Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+  
+  <script>
+    $(document).ready(function() {
+      // Initialize DataTable
+      $('#vendorTable').DataTable({
+        pageLength: 5,
+        lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, 'All']],
+        language: {
+            
+          search: "Search vendors:",
+          lengthMenu: "Show _MENU_ vendors",
+          // info: "Showing _START_ to _END_ of _TOTAL_ vendors",
+          // paginate: {
+          //   previous: "‹",
+          //   next: "›"
+          // }
+        }
+      });
+      
+      // Handle form submission
+      $('#saveVendor').click(function() {
+        // Basic form validation
+        const vendorName = $('#vendorName').val();
+        const vendorCategory = $('#vendorCategory').val();
+        
+        if (!vendorName || !vendorCategory) {
+          alert('Please fill in all required fields');
+          return;
+        }
+        
+        // In a real application, you would send this data to a server
+        // For demo purposes, we'll just close the modal and show an alert
+        $('#vendorModal').modal('hide');
+        alert('Vendor ' + vendorName + ' has been added successfully!');
+        
+        // Reset the form
+        $('#vendorForm')[0].reset();
+      });
+    });
+  </script>
+</body>
+</html>
